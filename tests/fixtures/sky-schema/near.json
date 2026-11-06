@@ -1,0 +1,23 @@
+{
+  "schema_version": 0,
+  "id": "A11Jiap",
+  "lane": "near",
+  "source": "mpc-neocp",
+  "ra": 23.8695,
+  "dec": 29.7856,
+  "t_first": "2026-11-06T12:00:00Z",
+  "t_last": "2026-11-06T12:29:00Z",
+  "n_obs": 4,
+  "mag": 18.0,
+  "score": 100,
+  "arc_days": 0.02,
+  "h": 28.9,
+  "not_seen_days": 0.108,
+  "urgency": null,
+  "motion": null,
+  "outcome": "pending",
+  "stations": ["G96"],
+  "visibility": {
+    "antigua-gt": { "alt_max_deg": 71.2, "hours_up": 6.5, "moon_sep_deg": 88.0 }
+  }
+}
