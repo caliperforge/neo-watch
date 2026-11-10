@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from email.message import Message
 from pathlib import Path
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 import pytest
 
@@ -37,7 +37,14 @@ def status(code):
 
 
 @pytest.fixture
-def serve(tmp_path, monkeypatch):
+def slept(monkeypatch):
+    delays = []
+    monkeypatch.setattr(poll, "sleep", delays.append)
+    return delays
+
+
+@pytest.fixture
+def serve(tmp_path, monkeypatch, slept):
     monkeypatch.chdir(tmp_path)
     requests = []
 
@@ -51,9 +58,10 @@ def serve(tmp_path, monkeypatch):
 
         def urlopen(request, timeout):
             requests.append((request, timeout))
-            if isinstance(outcome, Exception):
-                raise outcome
-            return outcome
+            result = outcome.pop(0) if isinstance(outcome, list) else outcome
+            if isinstance(result, Exception):
+                raise result
+            return result
 
         monkeypatch.setattr(poll, "urlopen", urlopen)
         return requests
@@ -79,9 +87,34 @@ def test_replay_writes_each_kind_once(serve):
 
 @pytest.mark.parametrize("outcome", [Response(BODY), status(304)], ids=["unchanged", "304"])
 def test_no_events_append_nothing(serve, outcome):
-    serve(outcome, ROWS)
+    requests = serve(outcome, ROWS)
     poll.main()
     assert not poll.HISTORY.exists()
+    assert not poll.MISSES.exists()
+    assert len(requests) == 1
+
+
+def test_timeout_then_success_writes_snapshot(serve, slept):
+    serve([TimeoutError(), Response(BODY)], PREVIOUS)
+    poll.main()
+    assert json.loads(poll.LATEST.read_text()) == ROWS
+    assert slept == [10]
+    assert not poll.MISSES.exists()
+
+
+@pytest.mark.parametrize("error", [TimeoutError(), URLError("timed out")], ids=["read", "connect"])
+def test_three_network_failures_log_one_miss(serve, slept, error):
+    requests = serve([error] * 3, PREVIOUS, {"ETag": '"e1"'})
+    poll.HISTORY.mkdir()
+    (poll.HISTORY / "2026-11.jsonl").write_text('{"event": "appeared"}\n')
+    before = {path: path.read_bytes() for path in Path().rglob("*") if path.is_file()}
+    poll.main()
+    after = {path: path.read_bytes() for path in Path().rglob("*") if path.is_file() and path != poll.MISSES}
+    assert after == before
+    (miss,) = poll.MISSES.read_text().splitlines()
+    assert json.loads(miss).keys() == {"at", "error"}
+    assert slept == [10, 30]
+    assert len(requests) == 3
 
 
 @pytest.mark.parametrize(
@@ -89,19 +122,19 @@ def test_no_events_append_nothing(serve, outcome):
     [
         (status(500), HTTPError),
         (Response(BODY, status=203), RuntimeError),
-        (TimeoutError(), TimeoutError),
         (Response(b"<html>"), json.JSONDecodeError),
     ],
-    ids=["500", "203", "timeout", "not-json"],
+    ids=["500", "203", "not-json"],
 )
 def test_refused_fetch_writes_nothing(serve, outcome, error):
-    serve(outcome, PREVIOUS, {"ETag": '"e1"'})
+    requests = serve(outcome, PREVIOUS, {"ETag": '"e1"'})
     poll.HISTORY.mkdir()
     (poll.HISTORY / "2026-11.jsonl").write_text('{"event": "appeared"}\n')
     before = {path: path.read_bytes() for path in Path().rglob("*") if path.is_file()}
     with pytest.raises(error):
         poll.main()
     assert {path: path.read_bytes() for path in Path().rglob("*") if path.is_file()} == before
+    assert len(requests) == 1
 
 
 @pytest.mark.parametrize(
