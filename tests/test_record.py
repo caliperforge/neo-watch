@@ -28,14 +28,29 @@ ROW = {
 }
 
 
-def test_ra_is_hours_times_15():
-    assert from_mpc(ROW, AT)["ra"] == 202.5
-
-
-def test_times_cross_the_month_end():
+def test_row_maps_to_near_record():
     record = from_mpc(ROW, AT)
-    assert record["t_first"] == "2026-10-31T18:00:00Z"
-    assert record["t_last"] == "2026-11-01T06:00:00Z"
+    assert record == {
+        "schema_version": 0,
+        "id": "T0Test1",
+        "lane": "near",
+        "source": "mpc-neocp",
+        "ra": 202.5,
+        "dec": -5.0,
+        "t_first": "2026-10-31T18:00:00Z",
+        "t_last": "2026-11-01T06:00:00Z",
+        "n_obs": 5,
+        "mag": 20.0,
+        "score": 90,
+        "arc_days": 0.5,
+        "h": 22.0,
+        "not_seen_days": 5.4,
+        "urgency": None,
+        "motion": None,
+        "outcome": "pending",
+        "stations": [],
+    }
+    jsonschema.validate(record, SCHEMA)
 
 
 @pytest.mark.parametrize("row", ROWS, ids=[row["Temp_Desig"] for row in ROWS])
