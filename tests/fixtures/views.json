@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-11-11T12:00:00Z",
+  "polled_at": "2026-11-10T09:00:00Z",
+  "tonight": [
+    {"id": "ATL6c2n", "score": 100, "ra": 339.927, "dec": -31.8093, "mag": 19.9, "h": 23.5, "n_obs": 18, "arc_days": 2.47, "not_seen_days": 1.09},
+    {"id": "L7ra0Bq", "score": 100, "ra": 6.6285, "dec": 9.6631, "mag": 19.1, "h": 27.4, "n_obs": 4, "arc_days": 0.05, "not_seen_days": 0.58},
+    {"id": "A11Jiap", "score": 100, "ra": 23.8695, "dec": 29.7856, "mag": 18.0, "h": 28.9, "n_obs": 4, "arc_days": 0.02, "not_seen_days": 0.108},
+    {"id": "C4MX1Z2", "score": 98, "ra": 198.1065, "dec": -12.441, "mag": 20.4, "h": 21.3, "n_obs": 9, "arc_days": 0.5, "not_seen_days": 5.42},
+    {"id": "X88Rt01", "score": 92, "ra": 274.9605, "dec": -8.7745, "mag": 20.7, "h": 25.6, "n_obs": 3, "arc_days": 0.03, "not_seen_days": 0.43},
+    {"id": "P21Hk3x", "score": 87, "ra": 51.603, "dec": 15.0391, "mag": 21.1, "h": 22.7, "n_obs": 12, "arc_days": 1.21, "not_seen_days": 1.17},
+    {"id": "K5Pp9mu", "score": 81, "ra": 174.30450000000002, "dec": 27.889, "mag": 20.9, "h": 23.0, "n_obs": 8, "arc_days": 1.05, "not_seen_days": 0.86},
+    {"id": "Q2W7tt4", "score": 76, "ra": 231.69299999999998, "dec": -22.1068, "mag": 20.2, "h": 22.2, "n_obs": 10, "arc_days": 0.47, "not_seen_days": 0.27},
+    {"id": "ZTF0Bq9", "score": 64, "ra": 118.68900000000001, "dec": 41.2207, "mag": 19.6, "h": 24.1, "n_obs": 5, "arc_days": 0.04, "not_seen_days": 1.25},
+    {"id": "CAQ0x3d", "score": 58, "ra": 314.99100000000004, "dec": -48.3412, "mag": 21.4, "h": 21.6, "n_obs": 14, "arc_days": 6.31, "not_seen_days": 1.65},
+    {"id": "6AC2271", "score": 45, "ra": 150.822, "dec": 4.5512, "mag": 21.8, "h": 20.9, "n_obs": 7, "arc_days": 0.92, "not_seen_days": 2.92},
+    {"id": "M1Kp2aZ", "score": 23, "ra": 86.5965, "dec": 62.3018, "mag": 22.0, "h": 19.8, "n_obs": 6, "arc_days": 1.88, "not_seen_days": 3.17}
+  ],
+  "days": [
+    {"day": "2026-11-09", "appeared": 1, "vanished": 1},
+    {"day": "2026-11-10", "appeared": 2, "vanished": 1}
+  ],
+  "outcomes": {
+    "all_time": {"confirmed_neo": 1, "not_neo": 0, "lost": 1, "unresolved": 1},
+    "last_7_days": {"confirmed_neo": 1, "not_neo": 0, "lost": 0, "unresolved": 1}
+  }
+}
